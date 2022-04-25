@@ -1,80 +1,90 @@
-import shutil
 from fastapi import FastAPI, UploadFile, File
 from fastapi.responses import FileResponse
-import uvicorn
+from fastapi.middleware.cors import CORSMiddleware
 import point
 import filter
-
+import utils
+from utils import uploads, remove_file, remove_files, str_id
 app = FastAPI()
 
+origins = ["*"]
+exports_folder = "exports/*"
 
-@app.post("/point/reverse", response_class=FileResponse)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+@app.post("/point/reverse")
 async def root(file: UploadFile = File(...)):
-    with open(f'uploads/{file.filename}', 'wb') as buffer:
-        shutil.copyfileobj(file.file, buffer)
-    path = "./uploads/"+file.filename
+    remove_files(exports_folder)
+    file.filename = str_id()+file.filename
+    path = uploads(file)
     image = point.reverse_image(path)
     point.export_image(image, "exports/"+file.filename)
-    res = "exports/"+file.filename
-    return res
+    remove_file(path)
+    return {"filename": file.filename}
 
 
-@app.post("/point/threshold", response_class=FileResponse)
+@app.post("/point/threshold")
 async def root(file: UploadFile = File(...), a: int = 0, b: int = 100):
-    with open(f'uploads/{file.filename}', 'wb') as buffer:
-        shutil.copyfileobj(file.file, buffer)
-    path = "./uploads/"+file.filename
+    remove_files(exports_folder)
+    file.filename = str_id()+file.filename
+    path = uploads(file)
     image = point.threshold(path, a, b)
     point.export_image(image, "exports/"+file.filename)
-    res = "exports/"+file.filename
-    return res
+    remove_file(path)
+    return {"filename": file.filename}
 
 
-@app.post("/point/log", response_class=FileResponse)
+@app.post("/point/log")
 async def root(file: UploadFile = File(...), c: float = 2):
-    with open(f'uploads/{file.filename}', 'wb') as buffer:
-        shutil.copyfileobj(file.file, buffer)
-    path = "./uploads/"+file.filename
+    remove_files(exports_folder)
+    file.filename = str_id()+file.filename
+    path = uploads(file)
     image = point.log_transformation(path, c)
     point.export_image(image, "exports/"+file.filename)
-    res = "exports/"+file.filename
-    return res
+    remove_file(path)
+    return {"filename": file.filename}
 
 
-@app.post("/point/hist", response_class=FileResponse)
+@app.post("/point/hist")
 async def root(file: UploadFile = File(...)):
-    with open(f'uploads/{file.filename}', 'wb') as buffer:
-        shutil.copyfileobj(file.file, buffer)
-    path = "./uploads/"+file.filename
+    remove_files(exports_folder)
+    file.filename = str_id()+file.filename
+    path = uploads(file)
     image = point.hist(path)
     point.export_image(image, "exports/"+file.filename)
-    res = "exports/"+file.filename
-    return res
+    remove_file(path)
+    return {"filename": file.filename}
 
 
-@app.post("/filter/gaussian_blur", response_class=FileResponse)
+@app.post("/filter/gaussian_blur")
 async def root(file: UploadFile = File(...), x: int = 5):
-    with open(f'uploads/{file.filename}', 'wb') as buffer:
-        shutil.copyfileobj(file.file, buffer)
-    path = "./uploads/"+file.filename
+    remove_files(exports_folder)
+    file.filename = str_id()+file.filename
+    path = uploads(file)
     image = filter.gaussian_blur(path, x)
     point.export_image(image, "exports/"+file.filename)
-    res = "exports/"+file.filename
-    return res
+    remove_file(path)
+    return {"filename": file.filename}
 
-@app.post("/filter/laplacian", response_class=FileResponse)
+
+@app.post("/filter/laplacian")
 async def root(file: UploadFile = File(...), k: int = 3):
-    with open(f'uploads/{file.filename}', 'wb') as buffer:
-        shutil.copyfileobj(file.file, buffer)
-    path = "./uploads/"+file.filename
+    remove_files(exports_folder)
+    file.filename = str_id()+file.filename
+    path = uploads(file)
     image = filter.laplacian(path, k)
     point.export_image(image, "exports/"+file.filename)
-    res = "exports/"+file.filename
-    return res
+    remove_file(path)
+    return {"filename": file.filename}
 
-if __name__ == '__main__':
-    uvicorn.run("app.main:app",
-                host="0.0.0.0",
-                port=8000,
-                reload=True,
-                )
+
+@app.get("/exports/{filename}")
+def get_file(filename: str):
+    return FileResponse("exports/"+filename)
