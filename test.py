@@ -1,4 +1,4 @@
-import point
+import filter
 
-i = point.hist("./image/demo.jpg")
-point.export_image(i,"test.jpg")
+image = filter.gaussian_blur("https://file.nt4rever.live/nt4rever/temp/rose.jpg", 3)
+print(image)

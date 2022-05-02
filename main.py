@@ -1,10 +1,12 @@
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 import point
 import filter
-import utils
-from utils import uploads, remove_file, remove_files, str_id
+import segment
+from pydantic import BaseModel
+from typing import Optional
+from utils import str_id, export_image
 app = FastAPI()
 
 origins = ["*"]
@@ -19,70 +21,86 @@ app.add_middleware(
 )
 
 
+class Image(BaseModel):
+    url: str
+    name: str
+    x: Optional[int] = None
+    k: Optional[int] = None
+    a: Optional[int] = None
+    b: Optional[int] = None
+    c: Optional[int] = None
+
+
 @app.post("/point/reverse")
-async def root(file: UploadFile = File(...)):
-    remove_files(exports_folder)
-    file.filename = str_id()+file.filename
-    path = uploads(file)
-    image = point.reverse_image(path)
-    point.export_image(image, "exports/"+file.filename)
-    remove_file(path)
-    return {"filename": file.filename}
+async def reverse(image: Image):
+    img = point.reverse_image(image.url)
+    name = str_id()+image.name
+    export_image(img, "exports/"+name)
+    return {"filename": name}
 
 
 @app.post("/point/threshold")
-async def root(file: UploadFile = File(...), a: int = 0, b: int = 100):
-    remove_files(exports_folder)
-    file.filename = str_id()+file.filename
-    path = uploads(file)
-    image = point.threshold(path, a, b)
-    point.export_image(image, "exports/"+file.filename)
-    remove_file(path)
-    return {"filename": file.filename}
+async def threshold(image: Image):
+    img = point.threshold(image.url, image.a, image.b)
+    name = str_id()+image.name
+    export_image(img, "exports/"+name)
+    return {"filename": name}
 
 
 @app.post("/point/log")
-async def root(file: UploadFile = File(...), c: float = 2):
-    remove_files(exports_folder)
-    file.filename = str_id()+file.filename
-    path = uploads(file)
-    image = point.log_transformation(path, c)
-    point.export_image(image, "exports/"+file.filename)
-    remove_file(path)
-    return {"filename": file.filename}
+async def log_transformation(image: Image):
+    img = point.log_transformation(image.url, image.c)
+    name = str_id()+image.name
+    export_image(img, "exports/"+name)
+    return {"filename": name}
 
 
 @app.post("/point/hist")
-async def root(file: UploadFile = File(...)):
-    remove_files(exports_folder)
-    file.filename = str_id()+file.filename
-    path = uploads(file)
-    image = point.hist(path)
-    point.export_image(image, "exports/"+file.filename)
-    remove_file(path)
-    return {"filename": file.filename}
+async def hist(image: Image):
+    img = point.hist(image.url)
+    name = str_id()+image.name
+    export_image(img, "exports/"+name)
+    return {"filename": name}
 
 
-@app.post("/filter/gaussian_blur")
-async def root(file: UploadFile = File(...), x: int = 5):
-    remove_files(exports_folder)
-    file.filename = str_id()+file.filename
-    path = uploads(file)
-    image = filter.gaussian_blur(path, x)
-    point.export_image(image, "exports/"+file.filename)
-    remove_file(path)
-    return {"filename": file.filename}
+@app.post("/filter/gaussian-blur")
+async def gaussian_blur(image: Image):
+    img = filter.gaussian_blur(image.url, image.x)
+    name = str_id()+image.name
+    export_image(img, "exports/"+name)
+    return {"filename": name}
 
 
 @app.post("/filter/laplacian")
-async def root(file: UploadFile = File(...), k: int = 3):
-    remove_files(exports_folder)
-    file.filename = str_id()+file.filename
-    path = uploads(file)
-    image = filter.laplacian(path, k)
-    point.export_image(image, "exports/"+file.filename)
-    remove_file(path)
-    return {"filename": file.filename}
+async def laplacian(image: Image):
+    img = filter.laplacian(image.url, image.k)
+    name = str_id()+image.name
+    export_image(img, "exports/"+name)
+    return {"filename": name}
+
+
+@app.post("/segment/kmean")
+async def kmean(image: Image):
+    img = segment.kmean(image.url, image.k)
+    name = str_id()+image.name
+    export_image(img, "exports/"+name)
+    return {"filename": name}
+
+
+@app.post("/segment/grahp-cut")
+async def grahp_cut(image: Image):
+    img = segment.grahp_cut(image.url)
+    name = str_id()+image.name
+    export_image(img, "exports/"+name)
+    return {"filename": name}
+
+
+@app.post("/segment/meanshift")
+async def meanshift(image: Image):
+    img = segment.mean_shift(image.url)
+    name = str_id()+image.name
+    export_image(img, "exports/"+name)
+    return {"filename": name}
 
 
 @app.get("/exports/{filename}")

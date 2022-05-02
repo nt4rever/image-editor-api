@@ -1,28 +1,22 @@
-import os
-import glob
 import random
-import shutil
 import string
+import numpy as np
+import urllib.request
+import cv2
 
 letters = string.ascii_lowercase
-
-
-def remove_files(folder):
-    files = glob.glob(folder)
-    for f in files:
-        os.remove(f)
-
-
-def remove_file(path):
-    if os.path.exists(path):
-        os.remove(path)
 
 
 def str_id():
     return ''.join(random.choice(letters) for i in range(10))
 
 
-def uploads(file):
-    with open(f'uploads/{file.filename}', 'wb') as buffer:
-        shutil.copyfileobj(file.file, buffer)
-    return "./uploads/"+file.filename
+def url_to_image(url):
+    url_response = urllib.request.urlopen(url)
+    img_array = np.array(bytearray(url_response.read()), dtype=np.uint8)
+    img = cv2.imdecode(img_array, -1)
+    return img
+
+
+def export_image(img, path):
+    cv2.imwrite(path, img)
