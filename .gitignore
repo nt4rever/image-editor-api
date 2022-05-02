@@ -1,3 +1,4 @@
 /__pycache__
-/exports/*
+/exports/*.jpg
+/exports/*.png
 test.py
