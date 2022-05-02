@@ -2,11 +2,11 @@ import cv2
 import numpy as np
 from sklearn.cluster import MeanShift, estimate_bandwidth
 
-from utils import url_to_image
+from utils import readb64
 
 
 def kmean(path, k=3):
-    image = url_to_image(path)
+    image = readb64(path)
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     pixel_values = image.reshape((-1, 3))
     pixel_values = np.float32(pixel_values)
@@ -21,7 +21,7 @@ def kmean(path, k=3):
 
 
 def grahp_cut(path):
-    img = url_to_image(path)
+    img = readb64(path)
     mask = np.zeros(img.shape[:2], np.uint8)
     bgdModel = np.zeros((1, 65), np.float64)
     fgdModel = np.zeros((1, 65), np.float64)
@@ -33,7 +33,7 @@ def grahp_cut(path):
 
 
 def mean_shift(path):
-    originImg = url_to_image(path)
+    originImg = readb64(path)
     originShape = originImg.shape
     flatImg = np.reshape(originImg, [-1, 3])
     # Estimate bandwidth for meanshift algorithm
