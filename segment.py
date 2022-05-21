@@ -20,7 +20,7 @@ def kmean(path, k=3):
     return segmented_image
 
 
-def grahp_cut(path):
+def graph_cut(path):
     img = readb64(path)
     mask = np.zeros(img.shape[:2], np.uint8)
     bgdModel = np.zeros((1, 65), np.float64)

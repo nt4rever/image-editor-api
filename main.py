@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import point
 import filter
 import segment
+import restoration
 from pydantic import BaseModel
 from typing import Optional
 from utils import str_id, export_image
@@ -78,6 +79,19 @@ async def laplacian(image: Image):
     export_image(img, "exports/"+name)
     return {"filename": name}
 
+@app.post("/filter/sobelx")
+async def sobel(image: Image):
+    img = filter.sobelx(image.uri, image.k)
+    name = str_id()+image.name
+    export_image(img, "exports/"+name)
+    return {"filename": name}
+
+@app.post("/filter/sobely")
+async def sobel(image: Image):
+    img = filter.sobely(image.uri, image.k)
+    name = str_id()+image.name
+    export_image(img, "exports/"+name)
+    return {"filename": name}
 
 @app.post("/segment/kmean")
 async def kmean(image: Image):
@@ -87,9 +101,9 @@ async def kmean(image: Image):
     return {"filename": name}
 
 
-@app.post("/segment/grahp-cut")
-async def grahp_cut(image: Image):
-    img = segment.grahp_cut(image.uri)
+@app.post("/segment/graph-cut")
+async def graph_cut(image: Image):
+    img = segment.graph_cut(image.uri)
     name = str_id()+image.name
     export_image(img, "exports/"+name)
     return {"filename": name}
@@ -102,6 +116,76 @@ async def meanshift(image: Image):
     export_image(img, "exports/"+name)
     return {"filename": name}
 
+
+@app.post("/restoration/tb-so-hoc")
+async def tb_so_hoc(image: Image):
+    img = restoration.tb_so_hoc(image.uri)
+    name = str_id()+image.name
+    export_image(img, "exports/"+name)
+    return {"filename": name}
+
+@app.post("/restoration/tb-hinh-hoc")
+async def tb_hinh_hoc(image: Image):
+    img = restoration.tb_hinh_hoc(image.uri)
+    name = str_id()+image.name
+    export_image(img, "exports/"+name)
+    return {"filename": name}
+
+@app.post("/restoration/tb-harmonic")
+async def tb_harmonic(image: Image):
+    img = restoration.tb_harmonic(image.uri)
+    name = str_id()+image.name
+    export_image(img, "exports/"+name)
+    return {"filename": name}
+
+@app.post("/restoration/tb-contraharmonic")
+async def tb_contraharmonic(image: Image):
+    img = restoration.tb_contraharmonic(image.uri)
+    name = str_id()+image.name
+    export_image(img, "exports/"+name)
+    return {"filename": name}
+
+@app.post("/restoration/loc-trung-vi")
+async def loc_trung_vi(image: Image):
+    img = restoration.loc_trung_vi(image.uri)
+    name = str_id()+image.name
+    export_image(img, "exports/"+name)
+    return {"filename": name}
+
+@app.post("/restoration/loc-min")
+async def loc_min(image: Image):
+    img = restoration.loc_min(image.uri)
+    name = str_id()+image.name
+    export_image(img, "exports/"+name)
+    return {"filename": name}
+
+@app.post("/restoration/loc-max")
+async def loc_max(image: Image):
+    img = restoration.loc_max(image.uri)
+    name = str_id()+image.name
+    export_image(img, "exports/"+name)
+    return {"filename": name}
+
+@app.post("/restoration/loc-midpoint")
+async def loc_midpoint(image: Image):
+    img = restoration.loc_midpoint(image.uri)
+    name = str_id()+image.name
+    export_image(img, "exports/"+name)
+    return {"filename": name}
+
+@app.post("/restoration/loc-alpha")
+async def loc_alpha(image: Image):
+    img = restoration.loc_alpha(image.uri)
+    name = str_id()+image.name
+    export_image(img, "exports/"+name)
+    return {"filename": name}
+
+@app.post("/restoration/loc-tuong-thich")
+async def loc_tuong_thich(image: Image):
+    img = restoration.loc_tuong_thich(image.uri)
+    name = str_id()+image.name
+    export_image(img, "exports/"+name)
+    return {"filename": name}
 
 @app.get("/exports/{filename}")
 def get_file(filename: str):
