@@ -5,6 +5,7 @@ import point
 import filter
 import segment
 import restoration
+import special
 from pydantic import BaseModel
 from typing import Optional
 from utils import str_id, export_image
@@ -183,6 +184,48 @@ async def loc_alpha(image: Image):
 @app.post("/restoration/loc-tuong-thich")
 async def loc_tuong_thich(image: Image):
     img = restoration.loc_tuong_thich(image.uri)
+    name = str_id()+image.name
+    export_image(img, "exports/"+name)
+    return {"filename": name}
+
+@app.post("/special/HDR")
+async def HDR(image: Image):
+    img = special.HDR(image.uri)
+    name = str_id()+image.name
+    export_image(img, "exports/"+name)
+    return {"filename": name}
+
+@app.post("/special/summer")
+async def Summer(image: Image):
+    img = special.Summer(image.uri)
+    name = str_id()+image.name
+    export_image(img, "exports/"+name)
+    return {"filename": name}
+
+@app.post("/special/winter")
+async def Winter(image: Image):
+    img = special.Winter(image.uri)
+    name = str_id()+image.name
+    export_image(img, "exports/"+name)
+    return {"filename": name}
+
+@app.post("/special/sharpen")
+async def Sharpen(image: Image):
+    img = special.sharpen(image.uri)
+    name = str_id()+image.name
+    export_image(img, "exports/"+name)
+    return {"filename": name}
+
+@app.post("/special/sepia")
+async def Sepia(image: Image):
+    img = special.sepia(image.uri)
+    name = str_id()+image.name
+    export_image(img, "exports/"+name)
+    return {"filename": name}
+
+@app.post("/special/pencil-sketch-grey")
+async def Pencil_sketch_grey(image: Image):
+    img = special.pencil_sketch_grey(image.uri)
     name = str_id()+image.name
     export_image(img, "exports/"+name)
     return {"filename": name}
