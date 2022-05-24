@@ -248,6 +248,19 @@ async def Pencil_sketch_grey(image: Image):
     export_image(img, "exports/"+name)
     return {"filename": name}
 
+@app.post("/special/gotham")
+async def gotham(image: Image):
+    img = special.gotham(image.uri)
+    name = str_id()+image.name
+    export_image(img, "exports/"+name)
+    return {"filename": name}
+
+@app.post("/special/stylization")
+async def Stylization(image: Image):
+    img = special.Stylization(image.uri)
+    name = str_id()+image.name
+    export_image(img, "exports/"+name)
+    return {"filename": name}
 
 @app.get("/exports/{filename}")
 def get_file(filename: str):
