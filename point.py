@@ -2,7 +2,6 @@ import cv2
 import numpy as np
 from utils import readb64
 
-
 def convert_to_gray(img):
     return cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 

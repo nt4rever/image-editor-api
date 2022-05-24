@@ -193,9 +193,9 @@ async def loc_tuong_thich(image: Image):
     return {"filename": name}
 
 
-@app.post("/restoration/loc-thong-thap")
+@app.post("/restoration/sharp")
 async def loc_tuong_thich(image: Image):
-    img = restoration.loc_thong_thap_ly_tuong(image.uri, 20000)
+    img = restoration.sharp(image.uri)
     name = str_id()+image.name
     export_image(img, "exports/"+name)
     return {"filename": name}
