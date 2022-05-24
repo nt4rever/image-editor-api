@@ -80,19 +80,14 @@ async def laplacian(image: Image):
     export_image(img, "exports/"+name)
     return {"filename": name}
 
-@app.post("/filter/sobelx")
+
+@app.post("/filter/sobel")
 async def sobel(image: Image):
-    img = filter.sobelx(image.uri, image.k)
+    img = filter.sobel(image.uri, image.k)
     name = str_id()+image.name
     export_image(img, "exports/"+name)
     return {"filename": name}
 
-@app.post("/filter/sobely")
-async def sobel(image: Image):
-    img = filter.sobely(image.uri, image.k)
-    name = str_id()+image.name
-    export_image(img, "exports/"+name)
-    return {"filename": name}
 
 @app.post("/segment/kmean")
 async def kmean(image: Image):
@@ -125,12 +120,14 @@ async def tb_so_hoc(image: Image):
     export_image(img, "exports/"+name)
     return {"filename": name}
 
+
 @app.post("/restoration/tb-hinh-hoc")
 async def tb_hinh_hoc(image: Image):
     img = restoration.tb_hinh_hoc(image.uri)
     name = str_id()+image.name
     export_image(img, "exports/"+name)
     return {"filename": name}
+
 
 @app.post("/restoration/tb-harmonic")
 async def tb_harmonic(image: Image):
@@ -139,12 +136,14 @@ async def tb_harmonic(image: Image):
     export_image(img, "exports/"+name)
     return {"filename": name}
 
+
 @app.post("/restoration/tb-contraharmonic")
 async def tb_contraharmonic(image: Image):
     img = restoration.tb_contraharmonic(image.uri)
     name = str_id()+image.name
     export_image(img, "exports/"+name)
     return {"filename": name}
+
 
 @app.post("/restoration/loc-trung-vi")
 async def loc_trung_vi(image: Image):
@@ -153,12 +152,14 @@ async def loc_trung_vi(image: Image):
     export_image(img, "exports/"+name)
     return {"filename": name}
 
+
 @app.post("/restoration/loc-min")
 async def loc_min(image: Image):
     img = restoration.loc_min(image.uri)
     name = str_id()+image.name
     export_image(img, "exports/"+name)
     return {"filename": name}
+
 
 @app.post("/restoration/loc-max")
 async def loc_max(image: Image):
@@ -167,12 +168,14 @@ async def loc_max(image: Image):
     export_image(img, "exports/"+name)
     return {"filename": name}
 
+
 @app.post("/restoration/loc-midpoint")
 async def loc_midpoint(image: Image):
     img = restoration.loc_midpoint(image.uri)
     name = str_id()+image.name
     export_image(img, "exports/"+name)
     return {"filename": name}
+
 
 @app.post("/restoration/loc-alpha")
 async def loc_alpha(image: Image):
@@ -181,12 +184,22 @@ async def loc_alpha(image: Image):
     export_image(img, "exports/"+name)
     return {"filename": name}
 
+
 @app.post("/restoration/loc-tuong-thich")
 async def loc_tuong_thich(image: Image):
     img = restoration.loc_tuong_thich(image.uri)
     name = str_id()+image.name
     export_image(img, "exports/"+name)
     return {"filename": name}
+
+
+@app.post("/restoration/loc-thong-thap")
+async def loc_tuong_thich(image: Image):
+    img = restoration.loc_thong_thap_ly_tuong(image.uri, 20000)
+    name = str_id()+image.name
+    export_image(img, "exports/"+name)
+    return {"filename": name}
+
 
 @app.post("/special/HDR")
 async def HDR(image: Image):
@@ -195,12 +208,14 @@ async def HDR(image: Image):
     export_image(img, "exports/"+name)
     return {"filename": name}
 
+
 @app.post("/special/summer")
 async def Summer(image: Image):
     img = special.Summer(image.uri)
     name = str_id()+image.name
     export_image(img, "exports/"+name)
     return {"filename": name}
+
 
 @app.post("/special/winter")
 async def Winter(image: Image):
@@ -209,12 +224,14 @@ async def Winter(image: Image):
     export_image(img, "exports/"+name)
     return {"filename": name}
 
+
 @app.post("/special/sharpen")
 async def Sharpen(image: Image):
     img = special.sharpen(image.uri)
     name = str_id()+image.name
     export_image(img, "exports/"+name)
     return {"filename": name}
+
 
 @app.post("/special/sepia")
 async def Sepia(image: Image):
@@ -223,12 +240,14 @@ async def Sepia(image: Image):
     export_image(img, "exports/"+name)
     return {"filename": name}
 
+
 @app.post("/special/pencil-sketch-grey")
 async def Pencil_sketch_grey(image: Image):
     img = special.pencil_sketch_grey(image.uri)
     name = str_id()+image.name
     export_image(img, "exports/"+name)
     return {"filename": name}
+
 
 @app.get("/exports/{filename}")
 def get_file(filename: str):

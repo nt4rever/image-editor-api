@@ -155,3 +155,11 @@ def loc_tuong_thich(path):
     img = img - np.multiply((noise_var / local_var), (img - local_mean))
     img = img.astype(np.uint8)
     return img
+
+def loc_thong_thap_ly_tuong(path, d):
+    img = readb64(path)
+    kernel3 = np.array([[0, -1,  0],
+                   [-1,  5, -1],
+                    [0, -1,  0]])
+    sharp_img = cv2.filter2D(src=img, ddepth=-1, kernel=kernel3)
+    return sharp_img
